@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../firebase";
 import SignOut from "./SignOut";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { auth } from "../firebase";
 import "../App.css";
 function Chat() {
@@ -10,7 +16,12 @@ function Chat() {
   // console.log("currentUser", currentUser);
   useEffect(() => {
     //unsub is a function returned by onSnapshot that can be called to stop listening for changes
-    const unsub = onSnapshot(collection(db, "messages"), (snapshot) => {
+    const q = query(
+      collection(db, "messages"),
+      orderBy("createdAt", "desc"),
+      limit(25)
+    );
+    const unsub = onSnapshot(q, (snapshot) => {
       const msg = snapshot.docs.map((doc) => ({
         data: doc.data(),
         id: doc.id,
@@ -25,19 +36,22 @@ function Chat() {
       <SignOut />
       <div className="messages">
         {messages.map(({ data, id }) => (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              flexDirection: "row",
-            }}
-            key={id}
-            className={`message ${
-              data.uid === currentUser.uid ? "sent" : "received"
-            }`}
-          >
-            <img src={data.photoURL} alt="" />
-            <p>{data.text}</p>
+          <div className="message-box">
+            <div
+              key={id}
+              className={`message ${
+                data.uid === currentUser.uid ? "sent" : "received"
+              }`}
+            >
+              <img src={data.photoURL} alt="" />
+              <p
+                style={{
+                  display: "flex",
+                }}
+              >
+                {data.text}
+              </p>
+            </div>
           </div>
         ))}
       </div>

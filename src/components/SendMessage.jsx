@@ -1,30 +1,42 @@
 import React, { useState } from "react";
 import { db, auth } from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { IoMdSend } from "react-icons/io";
 
 function SendMessage() {
   const [message, setMessage] = useState("");
   const { uid, displayName, photoURL } = auth.currentUser;
   async function sendMessage(e) {
     e.preventDefault();
-    await addDoc(collection(db, "messages"), {
-      displayName,
-      photoURL,
-      uid,
-      createdAt: new Date(),
-      text: message,
-    });
+    const tempMessage = message;
     setMessage("");
+    if (tempMessage.length > 0) {
+      console.log(tempMessage.length);
+      await addDoc(collection(db, "messages"), {
+        displayName,
+        photoURL,
+        uid,
+        createdAt: serverTimestamp(),
+        text: tempMessage,
+      });
+    }
   }
   return (
-    <form onSubmit={sendMessage}>
+    <form
+      onSubmit={sendMessage}
+      style={{
+        position: "fixed",
+        bottom: "0",
+        left: "0",
+        right: "0",
+        display: "flex",
+      }}
+    >
       <input
         style={{
           width: "100%",
-          fontSize: "15px",
-          fontWeight: "550",
-          marginLeft: "5px",
-          marginBottom: "-3px",
+          padding: "0 1rem",
+          fontSize: "20px",
         }}
         type="text"
         value={message}
@@ -34,15 +46,19 @@ function SendMessage() {
       />
       <button
         style={{
-          width: "18%",
-          fontSize: "15px",
-          fontWeight: "550",
-          margin: "4px",
+          display: "flex",
+          color: "blue",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "20%",
+          padding: "10px",
           maxWidth: "200px",
+          fontSize: "20px",
         }}
         type="submit"
       >
-        Send
+        <span>Send</span>
+        <IoMdSend />
       </button>
     </form>
   );
