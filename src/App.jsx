@@ -9,15 +9,16 @@ function App() {
   const [user, setUser] = useState(null);
   onAuthStateChanged(auth, (user) => {
     user ? setUser(user) : setUser(null);
-    // console.log(user);
-    // if (user) {
-    //   console.log("signed in");
-    // } else {
-    //   console.log("signed out");
-    // }
+    console.log(user);
+    if (user) {
+      console.log("signed in");
+    } else {
+      console.log("signed out");
+    }
   });
   return (
     <>
+      {/* <SignIn /> */}
       {user ? (
         <>
           <Chat />

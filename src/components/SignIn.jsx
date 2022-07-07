@@ -1,15 +1,23 @@
 import React from "react";
 import GoogleButton from "react-google-button";
-import { auth } from "../firebase";
+import { db, auth } from "../firebase";
+import { collection, addDoc } from "firebase/firestore";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import "../App.css";
+import { publicKey } from "../encryption";
 
 function SignIn() {
   const handleGoogleSignIn = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
-      .then((result) => {
-        // console.log(result);
+    .then(async (result) => {
+      console.log(publicKey);
+      const { uid } = auth.currentUser;
+        //writing public key to firebase
+        await addDoc(collection(db, "public_keys"), {
+          uid: uid,
+          publicKey: publicKey,
+        });
       })
       .catch((error) => {
         console.log(error);

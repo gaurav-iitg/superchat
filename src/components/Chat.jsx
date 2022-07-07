@@ -26,7 +26,6 @@ function Chat() {
         data: doc.data(),
         id: doc.id,
       }));
-      // console.log(msg);
       setMessages(msg);
     });
     return unsub;
@@ -43,7 +42,7 @@ function Chat() {
                 data.uid === currentUser.uid ? "sent" : "received"
               }`}
             >
-              <img src={data.photoURL} alt="" />
+              <img src={data.photoURL} alt="user" />
               <p
                 style={{
                   display: "flex",
